@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { ITransactionsHistory } from "../../../features/Others/ClientInterfaces";
 import {

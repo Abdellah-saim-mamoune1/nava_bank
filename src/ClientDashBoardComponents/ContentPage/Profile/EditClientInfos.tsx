@@ -15,7 +15,6 @@ type EditClientInfosProps = {
 export function EditClientInfos({
   userData,
   onClose,
-  onSave,
   title,
   from
 }: EditClientInfosProps) {

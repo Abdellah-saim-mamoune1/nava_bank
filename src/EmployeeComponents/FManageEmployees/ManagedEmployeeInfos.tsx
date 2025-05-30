@@ -17,7 +17,7 @@ export function ManagedEmployeeInfos({ returnaction }: { returnaction: returnto 
   const [confirmation, setConfirmation] = useState(false);
   const [freeze, setFreeze] = useState<{ accountid: string; thestate: boolean }>();
   const [showSendMessage, setShowSendMessage] = useState(false);
-  const [showTransactions, setShowTransactions] = useState(false);
+  const [showTransactions] = useState(false);
   const [loading, setLoading] = useState(false);
   const [freezeResult, setFreezeResult] = useState<boolean | null>(null);
 
