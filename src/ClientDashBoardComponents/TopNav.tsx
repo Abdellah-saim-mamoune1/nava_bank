@@ -6,7 +6,6 @@ import { setLeftNav } from "../features/Slices/TopNavSlice";
 import { useNavigate } from "react-router-dom";
 import { ToggleDarkMode } from "./ContentPage/Others/ToggleDarkMode";
 import { setLogInState } from "../features/Slices/MainSlice";
-import Cookies from "js-cookie";
 
 export default function TopNav() {
   const navigate = useNavigate();
