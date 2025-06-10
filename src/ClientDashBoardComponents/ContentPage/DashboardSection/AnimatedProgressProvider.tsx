@@ -16,7 +16,6 @@ export default function AccountBalancePieChart() {
 
   const accountBalances = clientInfo.bankEmails.map((email: any) => email.balance);
   const accountIds = clientInfo.bankEmails.map((email: any) => email.accountId);
-  const totalBalance = accountBalances.reduce((acc: any, val: any) => acc + val, 0);
 
   const data = accountBalances.map((balance: any, index: string | number) => ({
     name: accountIds[index],
@@ -35,10 +34,7 @@ export default function AccountBalancePieChart() {
               outerRadius="78%"
               dataKey="value"
               labelLine={false}
-              label={({ value }) => {
-                const percent = totalBalance ? ((value / totalBalance) * 100).toFixed(1) : "0";
-                return `${percent}%`;
-              }}
+             
             >
               {data.map((_: any, index: number) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
