@@ -23,7 +23,7 @@ ChartJS.register(
   Legend
 );
 
-export function ClientTransactionsChart() {
+export function ClientTransactionsChart({theme}:{theme:"light"|"dark"}) {
   const transactions = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transactionsHistory
   );
@@ -32,8 +32,7 @@ export function ClientTransactionsChart() {
   );
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(
-    window.matchMedia("(prefers-color-scheme: dark)").matches ||
-      document.documentElement.classList.contains("dark")
+  theme==="dark"?true:false
   );
 
   useEffect(() => {
