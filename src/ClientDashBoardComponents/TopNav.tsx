@@ -32,7 +32,7 @@ export default function TopNav() {
   }
 
   function handleLogout() {
-    Cookies.remove("token");
+    localStorage.removeItem("refreshtoken");
     dispatch(setLogInState({ Type: null, IsLoggedIn: false }));
   }
 

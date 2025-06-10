@@ -6,10 +6,13 @@ interface LogInState {
 }
 
 interface infos{
-logininfos:LogInState|null
+logininfos:LogInState|null,
+Token:string|null
+
 }
 const initialState: infos= {
-logininfos:null
+logininfos:null,
+Token:null
 };
 
 const counterSlice = createSlice({
@@ -20,9 +23,14 @@ const counterSlice = createSlice({
    setLogInState:(state,action: PayloadAction<LogInState>)=>{
     state.logininfos=action.payload;
    
+   },
+
+    setToken:(state,action: PayloadAction<string>)=>{
+    state.Token=action.payload;
+   
    }
   },
 });
 
-export const {  setLogInState } = counterSlice.actions;
+export const { setLogInState,setToken } = counterSlice.actions;
 export default counterSlice.reducer;

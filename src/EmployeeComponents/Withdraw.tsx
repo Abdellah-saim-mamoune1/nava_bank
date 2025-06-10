@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { WithdrawApi } from "../features/EmployeeFeatures/Others/APIs";
+import { useAppSelector } from "../features/Slices/hooks";
 
 export function Withdraw() {
+   const employeeaccount=useAppSelector(s=>s.EPages.EmployeeInfos?.accountInfo.accountId);
   const [formData, setFormData] = useState({
     clientAccount: "",
     amount:"",
-    employeeAccount: "najmharawi@Nova.com",
+    employeeAccount: employeeaccount,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showDepositResult, setShowDepositResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const token=useAppSelector(s=>s.MainSlice.Token);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if((e.target.name==="amount"&&e.target.value.length>7)||e.target.name==="clientAccount"&&e.target.value.length>10)
       return;
@@ -43,7 +46,7 @@ export function Withdraw() {
 
   
 
-    const success = await WithdrawApi(formData);
+    const success = await WithdrawApi(formData,token);
 
     setShowConfirmation(false);
     setLoading(false);

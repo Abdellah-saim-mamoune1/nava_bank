@@ -1,16 +1,18 @@
 import axios from "axios";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
 import { IClient } from "./Interfaces";
-import { setLogInState } from "../../Slices/MainSlice";
+import { setLogInState, setToken } from "../../Slices/MainSlice";
 import { SetNonReadedNotifications } from "../Slices/PagesSlice";
+import { fetchClientInfo } from "../../Slices/Client_Infos_Slice";
 
 export  const FetchEmployeeInfos=createAsyncThunk(
   'ClientInfos/FetchEmployeeInfos',
    async (_,thunkAPI) => {
-    const token = Cookies.get("token");
+    const state:any = thunkAPI.getState();
+     const token = state.MainSlice.Token;
+  
   try {
-    const response = await axios.get('https://localhost:7287/api/Employee/GetEmployeeInfo',
+    const response = await axios.get('https://nova1-1.onrender.com/api/Employee/GetEmployeeInfo',
 {
      headers: {
        Authorization: `Bearer ${token}`,
@@ -26,12 +28,64 @@ export  const FetchEmployeeInfos=createAsyncThunk(
   }
    });
 
+  export const RefreshTokenAPI=createAsyncThunk(
+  'a/a',
+   async (_,thunkAPI) => {
+  
+  //localStorage.getItem("account");
+    try{
+      const Account=localStorage.getItem("account");// "hazim.khalil@Nova.com";   //"A8UKS91R3D";
+  const refreshtoken=localStorage.getItem("refreshtoken");
+  interface r{
+    account:string|null,
+    refreshToken:string|null
+  }
+
+  const infos:r={
+    account:Account,
+    refreshToken:refreshtoken
+  }
+       const type=localStorage.getItem("type");
+const data=await axios.put("https://nova1-1.onrender.com/api/Authorization/RefreshTokens/",infos);
+
+   console.log("token");
+   console.log(data.data);
+   localStorage.setItem("refreshtoken",data.data.refreshtoken);
+   thunkAPI.dispatch(setToken(data.data.token));
+
+
+     if(type==="Employee"){
+       thunkAPI.dispatch(FetchEmployeeInfos());
+      }
+    else if(type==="Client"){
+     thunkAPI.dispatch(fetchClientInfo());
+    }
+   
+   //thunkAPI.dispatch(setLogInState({Type:null,IsLoggedIn:false}));
+    return true;
+    }catch(err){
+       thunkAPI.dispatch(setLogInState({Type:null,IsLoggedIn:false}));
+         console.log("token error")
+         console.log(err);
+        
+      return false;
+    }
+   });
+ 
+
 export  const FetchAllEmployeesInfos=createAsyncThunk(
   'ClientInfos/FetchAllEmployeesInfos',
  
-   async () => {
+   async (_,thunkAPI) => {
+     const state:any = thunkAPI.getState();
+     const token = state.MainSlice.Token;
+  
   try {
-    const response = await axios.get('https://localhost:7287/api/Employee/GetAllEmployeesInfos');
+    const response = await axios.get('https://nova1-1.onrender.com/api/Employee/GetAllEmployeesInfos',{
+     headers: {
+       Authorization: `Bearer ${token}`,
+      }
+  });
       return response.data
 
   } catch (error) {
@@ -48,13 +102,18 @@ export const UpdateIsEmployeeNotificationViewed = createAsyncThunk(
 
   async (info:any,thunkAPI) => {
     const state:any= thunkAPI.getState();
+    const token = state.MainSlice.Token;
+  
    let readednotif =state.EPages.NonReadedNotifications;
     if(readednotif){
       readednotif=readednotif.filter((a:any)=>a.id!==info.id);
       thunkAPI.dispatch(SetNonReadedNotifications(readednotif));
     }
    
-      await axios.put(`https://localhost:7287/api/ENotifications/UpdateIsEmployeeNotificationviewed/`,info
+      await axios.put(`https://nova1-1.onrender.com/api/ENotifications/UpdateIsEmployeeNotificationviewed/`,info,{
+         headers: {
+       Authorization: `Bearer ${token}`,
+      }}
       );
       
       
@@ -69,9 +128,15 @@ export const UpdateIsEmployeeNotificationViewed = createAsyncThunk(
   'ClientInfos/FetchEmployeeNotifications',
  
    async (Account:string,thunkAPI) => {
+     const state:any= thunkAPI.getState();
+     const token = state.MainSlice.Token;
+  
   try {
-    const response = await axios.get(`https://localhost:7287/api/ENotifications/GetEmployeeNotifications/${Account}`,
+    const response = await axios.get(`https://nova1-1.onrender.com/api/ENotifications/GetEmployeeNotifications/${Account}`,
 {
+   headers: {
+       Authorization: `Bearer ${token}`,
+      }
     });
     if(response.data){
   const r = response.data.filter((a:any)=>a.isviewed===false);
@@ -90,10 +155,13 @@ export const UpdateIsEmployeeNotificationViewed = createAsyncThunk(
 
 export const fetchDashboardStats = createAsyncThunk(
     'ClientInfos/fetchDashboardStats',
-async () => {
-  const token = Cookies.get("token");
+async (_,thunkAPI) => {
+
+    const state:any= thunkAPI.getState();
+    const token = state.MainSlice.Token;
+  
     try {
-      const response = await axios.get('https://localhost:7287/api/Employee/GetCardsInfo', {
+      const response = await axios.get('https://nova1-1.onrender.com/api/Employee/GetCardsInfo', {
         
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,16 +177,19 @@ async () => {
 );
 
 
- export async function FreezeUnfreezeClientAccount(accountId:string,State:string){
+ export async function FreezeUnfreezeClientAccount(accountId:string,State:string,token:string|null){
   interface infos{
 accountId:string,
 state:string
   }
  const state:infos={accountId:accountId,state:State};
 
-
     try {
-      const response = await axios.put('https://localhost:7287/api/Client/FreezeUnfreezeClientAccount',state);
+      const response = await axios.put('https://nova1-1.onrender.com/api/ManageClients/FreezeUnfreezeClientAccount',state,
+        { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+      );
   if(response.status===200)
     return true;
   return false;
@@ -128,7 +199,7 @@ state:string
     }
  
 };
- export async function FreezeUnfreezeEmployeeAccount(accountId:string,State:string){
+ export async function FreezeUnfreezeEmployeeAccount(accountId:string,State:string,token:string|null){
   interface infos{
 accountId:string,
 state:string
@@ -137,7 +208,11 @@ state:string
  const state:infos={accountId:accountId,state:State};
 
     try {
-      const response = await axios.put('https://localhost:7287/api/Employee/FreezeUnfreezeEmployeeAccount',state);
+      const response = await axios.put('https://nova1-1.onrender.com/api/Employee/FreezeUnfreezeEmployeeAccount',state,
+        { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+      );
 
   if(response.status===200)
     return true;
@@ -150,9 +225,13 @@ state:string
  
 };
 
-export async function SendEmployeeMessage(info:any){
+export async function SendEmployeeMessage(info:any,token:string|null){
     try {
-      const response = await axios.post('https://localhost:7287/api/Employee/SendMessageToEmployee',info);
+      const response = await axios.post('https://nova1-1.onrender.com/api/Employee/SendMessageToEmployee',info,
+        {headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+      );
 
   if(response.status===200){
   await FetchEmployeeNotifications(info.accountId);
@@ -168,9 +247,13 @@ export async function SendEmployeeMessage(info:any){
 
 
 
- export async function UpdateEmployeeInfos(infos:any){
+ export async function UpdateEmployeeInfos(infos:any,token:string|null){
    try{
-    const res=await axios.put("https://localhost:7287/api/Employee/UpdateEmployee",infos);
+    const res=await axios.put("https://nova1-1.onrender.com/api/Employee/UpdateEmployee",infos,
+      { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+    );
     if(res.status===200)
    return true;
     
@@ -182,9 +265,13 @@ export async function SendEmployeeMessage(info:any){
  
 };
 
-export async function AddNewClientAccount(infos:any){
+export async function AddNewClientAccount(infos:any,token:string|null){
    try{
-    const res=await axios.post("https://localhost:7287/api/Client/AddAccount",infos);
+    const res=await axios.post("https://nova1-1.onrender.com/api/ManageClients/AddAccount",infos,
+      { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+    );
     if(res.status===200)
    return true;
     
@@ -196,10 +283,14 @@ export async function AddNewClientAccount(infos:any){
  
 };
 
-export async function AddNewEmployeeApi(infos:any){
+export async function AddNewEmployeeApi(infos:any,token:string|null){
    try{
     
-    const res=await axios.post("https://localhost:7287/api/Employee/AddNewEmployee",infos);
+    const res=await axios.post("https://nova1-1.onrender.com/api/Employee/AddNewEmployee",infos,
+      { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+    );
     if(res.status===200)
    return true;
     
@@ -212,10 +303,14 @@ export async function AddNewEmployeeApi(infos:any){
 };
 
 
- export async function DepositApi(infos:any){
+ export async function DepositApi(infos:any,token:string|null){
   
     try {
-      const response = await axios.post('https://localhost:7287/api/ManageClients/Deposit',infos);
+      const response = await axios.post('https://nova1-1.onrender.com/api/ManageClients/Deposit',infos,
+        { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+      );
   if(response.status===200)
     return true;
 
@@ -229,10 +324,14 @@ export async function AddNewEmployeeApi(infos:any){
 };
 
 
- export async function WithdrawApi(infos:any){
+ export async function WithdrawApi(infos:any,token:string|null){
   
     try {
-      const response = await axios.post('https://localhost:7287/api/ManageClients/Withdraw',infos);
+      const response = await axios.post('https://nova1-1.onrender.com/api/ManageClients/Withdraw',infos,
+        { headers: {
+        Authorization: `Bearer ${token}`,
+      }}
+      );
   if(response.status===200)
     return true;
 
@@ -249,10 +348,18 @@ export async function AddNewEmployeeApi(infos:any){
 export const fetchClientsInfos = createAsyncThunk(
   'ClientInfos/fetchClientsInfos',
  
-async () => {
- 
+async (_,thunkAPI) => {
+  const state:any= thunkAPI.getState();
+  const token = state.MainSlice.Token;
+  
   try {
-    const response = await axios.get('https://localhost:7287/api/Client/GetAllClients');
+    const response = await axios.get('https://nova1-1.onrender.com/api/ManageClients/GetAllClients',
+      {
+          headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
  
     return response.data; 
   } catch (error) {
@@ -265,10 +372,11 @@ async () => {
 
 export const fetchRecentTransactionsXtransfers = createAsyncThunk(
   'ClientInfos/fetchRecentTransactionsXtransfers',
-async () => {
-  const token = Cookies.get("token");
+async (_,thunkAPI) => {
+  const state:any= thunkAPI.getState();
+  const token = state.MainSlice.Token;
   try {
-    const response = await axios.get('https://localhost:7287/api/Employee/EGetAllTransactions', {
+    const response = await axios.get('https://nova1-1.onrender.com/api/Employee/EGetAllTransactions', {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -284,9 +392,17 @@ async () => {
 
 export const AddNewClient = createAsyncThunk(
   'ClientInfos/fetchRecentTransactionsXtransfers',
-async (Client:IClient) => {
+async (Client:IClient,thunkAPI) => {
+  const state:any= thunkAPI.getState();
+  const token = state.MainSlice.Token;
   try {
-    const response = await axios.post('https://localhost:7287/api/ManageClients/AddNewClient',Client);
+    const response = await axios.post('https://nova1-1.onrender.com/api/ManageClients/AddNewClient',Client,
+      {
+        headers: {
+        Authorization: `Bearer ${token}`,
+      }
+      }
+    );
 if(response.status===200)
     return true; 
   return false;

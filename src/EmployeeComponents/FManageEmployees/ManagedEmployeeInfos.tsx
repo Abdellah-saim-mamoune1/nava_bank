@@ -12,7 +12,7 @@ import { SendMessageToEmployee } from "../SendMessageToEmployee";
 export function ManagedEmployeeInfos({ returnaction }: { returnaction: returnto }) {
   const employee = useAppSelector((state) => state.EPages.ManagedEmployeeInfos);
   const dispatch = useAppDispatch();
-
+ const token=useAppSelector(state=>state.MainSlice.Token);
   const [showEditInfos, setShowEditInfos] = useState(false);
   const [confirmation, setConfirmation] = useState(false);
   const [freeze, setFreeze] = useState<{ accountid: string; thestate: boolean }>();
@@ -39,7 +39,7 @@ export function ManagedEmployeeInfos({ returnaction }: { returnaction: returnto 
   const handleFreezeToggle = async () => {
     setLoading(true);
     if (freeze) {
-      const result = await FreezeUnfreezeEmployeeAccount(freeze.accountid,freeze.thestate?"Activate":"DisActivate");
+      const result = await FreezeUnfreezeEmployeeAccount(freeze.accountid,freeze.thestate?"Activate":"DisActivate",token);
       setFreezeResult(result);
       if (result) 
         dispatch(setEmployeeAccountState(!freeze.thestate));

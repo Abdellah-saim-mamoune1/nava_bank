@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import { TransferData } from '../Others/ClientInterfaces';
 import { AddNotification } from '../Others/ClientInterfaces';
@@ -12,9 +11,10 @@ import { setLogInState } from './MainSlice';
 export const fetchClientInfo = createAsyncThunk(
   'ClientInfos/fetchClientInfo',
   async (_,thunkAPI) => {
-    const token = Cookies.get("token");
+    const state:any = thunkAPI.getState();
+    const token = state.MainSlice.Token;
     try {
-      const response = await axios.get('https://localhost:7287/api/Client/GetClientInfo', {
+      const response = await axios.get('https://nova1-1.onrender.com/api/Client/GetClientInfo', {
         headers: {
           Authorization: `Bearer ${token}`,
         }
@@ -31,7 +31,7 @@ export const fetchClientInfo = createAsyncThunk(
       return response.data; 
     } catch (error) {
       console.log(error);
-      thunkAPI.dispatch(setLogInState({Type:null,IsLoggedIn:false}));
+     // thunkAPI.dispatch(setLogInState({Type:null,IsLoggedIn:false}));
       return null; 
     }
   }
@@ -40,8 +40,16 @@ export const fetchClientInfo = createAsyncThunk(
 export const fetchClientTransactionhistory = createAsyncThunk(
   'ClientInfos/fetchClientTransactionhistory',
   async (v:string|null,thunkAPI) => {
+    const state:any = thunkAPI.getState();
+    const token = state.MainSlice.Token;
+     
     try {
-      const response = await axios.get(`https://localhost:7287/api/TransactionsHistory/GetTransactionHistoryById${v}`
+      const response = await axios.get(`https://nova1-1.onrender.com/api/TransactionsHistory/GetTransactionHistoryById${v}`,{
+       headers: {
+          Authorization: `Bearer ${token}`,
+        }
+
+      }
       );
     
        if(response.data.length===0)
@@ -64,9 +72,15 @@ export const fetchClientNotifications = createAsyncThunk(
   'ClientInfos/fetchClientNotifications',
 
   async (n:string|null, thunkAPI) => {
+   const state:any = thunkAPI.getState();
+    const token = state.MainSlice.Token;
    
     try {
-      const response = await axios.get(`https://localhost:7287/api/CNotifications/GetClientNotifications/${n}`
+      const response = await axios.get(`https://nova1-1.onrender.com/api/CNotifications/GetClientNotifications/${n}`,{
+      headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
       );
       if(response.data){
       const r = response.data.filter((a:any)=>a.isviewed===false);
@@ -91,6 +105,8 @@ export const TransferFundThunk = createAsyncThunk(
   async (value:TransferData,thunkAPI) => {
     const state:any = thunkAPI.getState();
     const account =state.ClientInfos.client_informations.accountInfo.accountId;
+    const token = state.MainSlice.Token;
+
     const v:AddNotification={
       title:"Transfer Fund",
       body:null,
@@ -98,19 +114,22 @@ export const TransferFundThunk = createAsyncThunk(
       AccountId:account
   }
     try {
-      const response = await axios.put('https://localhost:7287/api/TransactionsHistory/TransferFund/',value
+      const response = await axios.put('https://nova1-1.onrender.com/api/TransactionsHistory/TransferFund/',value,{
+      headers: {
+          Authorization: `Bearer ${token}`,
+        }}
       );
 
    v.body=`The process of transferring ${value.amount} from ${value.senderAccountId} to ${value.recieverAccountId} ${
         response.data==="Valid Requist"?"went successfully":"failed"} `
    
-        await sendclientmessage(v);
+        await sendclientmessage(v,token);
         thunkAPI.dispatch(fetchClientNotifications(account));
         thunkAPI.dispatch(fetchClientInfo());
       return response.data; 
     } catch (error) {
       v.body=`The process of transferring ${value.amount} from ${value.senderAccountId} to ${value.recieverAccountId} failed `
-      await sendclientmessage(v);
+      await sendclientmessage(v,token);
       thunkAPI.dispatch(fetchClientNotifications(account));
       thunkAPI.dispatch(fetchClientInfo());
       return null; 
@@ -119,9 +138,17 @@ export const TransferFundThunk = createAsyncThunk(
   }
 );
 
-export async function sendclientmessage(v:AddNotification){
+
+
+export async function sendclientmessage(v:AddNotification,token:string|null){
+ 
   try{
- const res=await axios.post('https://localhost:7287/api/ManageClients/AddClientNotification',v);
+  console.log(v);
+ const res=await axios.post('https://nova1-1.onrender.com/api/Client/AddClientNotification',v,
+  { headers: {
+          Authorization: `Bearer ${token}`,
+        }}
+ );
  if(res.status===200)
   return true;
 return false;
@@ -131,11 +158,17 @@ return false;
   }
 }
 
+
+
 export const UpdateIsNotificationViewed = createAsyncThunk(
   'ClientInfos/UpdateIsNotificationViewed',
 
   async (ClientxNotificationId:number,thunkAPI) => {
+    
     const state:any = thunkAPI.getState();
+     const token = state.MainSlice.Token;
+    
+     console.log("notif");
    let readednotif =state.ClientInfos.NonReadedNotifications;
     if(readednotif){
       readednotif=readednotif.filter((a:any)=>a.id!==ClientxNotificationId);
@@ -144,8 +177,13 @@ export const UpdateIsNotificationViewed = createAsyncThunk(
       console.log(readednotif);
     }
    
-      await axios.put(`https://localhost:7287/api/CNotifications/UpdateIsNotificationviewed/${ClientxNotificationId}`
+      const res=await axios.put(`https://nova1-1.onrender.com/api/CNotifications/UpdateIsNotificationviewed/${ClientxNotificationId}`,{},
+        { headers: {
+          Authorization: `Bearer ${token}`,
+        }}
+       
       );
+       console.log(res.status);
   }
 );
 

@@ -11,7 +11,6 @@ import { GetHelp } from "../ClientDashBoardComponents/ContentPage/Others/GetHelp
 import { useAppSelector } from "../features/Slices/hooks";
 import { useAppDispatch } from "../features/Slices/hooks";
 import { useEffect} from "react";
-import { fetchClientInfo } from "../features/Slices/Client_Infos_Slice";
 import { MainBankRoutes } from "../MainBankPages/MainBankRoutes";
 import { Navigate } from "react-router-dom";
 import { Notifications } from "../ClientDashBoardComponents/ContentPage/NotificationsSection/Notifications";
@@ -23,38 +22,24 @@ import { Deposit } from "../EmployeeComponents/Deposit";
 import { Withdraw } from "../EmployeeComponents/Withdraw";
 import { TransfersHistory } from "../EmployeeComponents/TransfersHistory";
 import { DepositWithDrawHistory } from "../EmployeeComponents/DepositWithdrawHistory";
-import { FetchEmployeeInfos } from "../features/EmployeeFeatures/Others/APIs";
 import { AddNewEmployee } from "../EmployeeComponents/AddNewEmployee";
-import Cookies from "js-cookie";
-import { setLogInState } from "../features/Slices/MainSlice";
 import { EmployeeProfileCard } from "../EmployeeComponents/EmployeeInfosPage";
 import { ManageEmployees } from "../EmployeeComponents/FManageEmployees/ManageEmployees";
+import { RefreshTokenAPI } from "../features/EmployeeFeatures/Others/APIs";
 import A from "../ClientDashBoardComponents/A";
 import B from "../ClientDashBoardComponents/B";
+
 export function Container() {
   const dispatch = useAppDispatch();
-  const LoginInfos =useAppSelector((state) => state.MainSlice.logininfos);
+  const LoginInfos =useAppSelector((state:any) => state.MainSlice.logininfos);
   const a=localStorage.getItem('theme');
-  const token = Cookies.get("token");
-  const type= Cookies.get("type");
   const theme = a===null||undefined?'light':a;
- 
+  
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
    localStorage.setItem('theme', theme);
-    if(type==="Employee"&&token){
-    dispatch(FetchEmployeeInfos());
-    console.log("yes employee");
-    console.log(type);
-    console.log(token);
-    }
-  else if(type==="Client"&&token){
-    dispatch(fetchClientInfo());
- console.log("yes client");
-  }
-  else
-    dispatch(setLogInState({Type:null,IsLoggedIn:false}));
-    
+   dispatch(RefreshTokenAPI());
+
   }, []);
 
   
@@ -65,7 +50,7 @@ export function Container() {
   }
 
 
-  if (LoginInfos.IsLoggedIn === false||!LoginInfos.Type)
+  else if (LoginInfos.IsLoggedIn === false)//||!LoginInfos.Type)
     return <MainBankRoutes />
   
 

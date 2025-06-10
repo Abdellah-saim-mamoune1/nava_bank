@@ -3,13 +3,14 @@ import { IAddNewEmployee } from "../features/EmployeeFeatures/Others/Interfaces"
 import { ConfirmationCard, ConfirmInfos } from "../SharedComponents/ConfirmationCard";
 import { ConfirmationResultCard, IConfirmationResultCard } from "../SharedComponents/ConfirmationResultCard";
 import { AddNewEmployeeApi } from "../features/EmployeeFeatures/Others/APIs";
+import { useAppSelector } from "../features/Slices/hooks";
 
 export function AddNewEmployee() {
   const [confirmation, setconfirmation] = useState(false);
   const [confirmresult, setconfirmresult] = useState(false);
   const [showcircularprogress, setshowcircularprogress] = useState(false);
   const [error, seterror] = useState(false);
-
+  const token=useAppSelector(state=>state.MainSlice.Token);
   const confirminfo: ConfirmInfos = {
     onclose: () => setconfirmation(false),
     onconfirm: () => handleSubmit(),
@@ -111,7 +112,7 @@ export function AddNewEmployee() {
       }
     };
 
-    const result = await AddNewEmployeeApi(payload);
+    const result = await AddNewEmployeeApi(payload,token);
     seterror(!result);
     setshowcircularprogress(false);
     setconfirmation(false);
@@ -211,10 +212,8 @@ export function AddNewEmployee() {
             className="w-full p-2 dark:border-gray-300 border rounded bg-white dark:bg-gray-700"
           >
             <option value={1}>Admin</option>
-            <option value={2}>HR</option>
-            <option value={3}>IT Support</option>
-            <option value={4}>ASS</option>
-            <option value={5}>Cashier</option>
+              <option value={1}>Cashier</option>
+          
           </select>
         </div>
 

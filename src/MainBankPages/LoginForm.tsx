@@ -1,13 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import React from "react";
 import { useAppDispatch } from "../features/Slices/hooks";
 import { motion } from "framer-motion";
 import { setLogInState } from "../features/Slices/MainSlice";
 import { IConfirmationResultCard } from "../SharedComponents/ConfirmationResultCard";
 import { ConfirmationResultCard } from "../SharedComponents/ConfirmationResultCard";
-
+import { setToken } from "../features/Slices/MainSlice";
 interface FormData {
   email: string;
   password: string;
@@ -43,20 +42,23 @@ export const LoginPage = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "https://localhost:7287/api/Authorization/login",
+        "https://nova1-1.onrender.com/api/Authorization/login",
         {
           email: formData.email,
           password: formData.password,
-        }
+        },{withCredentials: true}
       );
 
-      Cookies.set("token", response.data.token, { expires: 1000, secure: true, sameSite: "Strict" });
-      Cookies.set("type", response.data.type, { expires: 1000, secure: true, sameSite: "Strict" });
+      
 
       if (response.data.frozen === true) {
         setShowSendResult(true);
       } else {
         dispatch(setLogInState({ Type: response.data.type, IsLoggedIn: true }));
+        dispatch(setToken(response.data.token));
+        localStorage.setItem("account", response.data.account);
+         localStorage.setItem("type", response.data.type);
+         localStorage.setItem("refreshtoken", response.data.refreshtoken);
       }
     } catch (error) {
       setShowErrorMessage(true);

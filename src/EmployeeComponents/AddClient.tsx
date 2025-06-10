@@ -164,6 +164,11 @@ seterror(false);
             onChange={(e) => handleChange("person", "email", e.target.value)}
             className="w-full p-2 dark:border-gray-300 border rounded"
           />
+
+
+
+
+          
           {renderError("person.email")}
         </div>
 
@@ -225,3 +230,6 @@ seterror(false);
     </div>
   );
 }
+
+
+

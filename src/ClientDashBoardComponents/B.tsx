@@ -38,8 +38,8 @@ if(!menuItems||menuItems===undefined)
     return <></>
 
 
- if(EmployeeType&&EmployeeType==="HR"||EmployeeType==="IT Support")
-    menuItems=menuItems.filter(a=>a.name!=="Finances");
+ if(EmployeeType&&EmployeeType==="Cashier")
+    menuItems=menuItems.filter(a=>a.name!=="Clients","Employees");
 
 
   const toggleSublist = (index: number) => {

@@ -63,7 +63,7 @@ if(ShowManagedClientScreen)
                   <td className="px-6 py-4">{new Date(tx.birthDate).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-sm">{tx.phoneNumber}</td>
                   <td className="px-6 py-4">
-                   {tx.type!=="Admin"&&tx.accountInfo.accountId!==employeeId&&<button onClick={()=>{dispatch(setManagedEmployeeInfos(tx)),setShowManagedClientScreen(true)}} className="text-white cursor-pointer rounded-lg bg-teal-500 p-2">Manage</button>}
+                   {tx.accountInfo.accountId!==employeeId&&<button onClick={()=>{dispatch(setManagedEmployeeInfos(tx)),setShowManagedClientScreen(true)}} className="text-white cursor-pointer rounded-lg bg-teal-500 p-2">Manage</button>}
                   </td>
                 </tr>
               ))}

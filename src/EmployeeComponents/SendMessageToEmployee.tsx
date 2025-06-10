@@ -14,7 +14,7 @@ type SimpleName = {
 };
 
 export function SendMessageToEmployee({ name, account,onreturn }: SimpleName) {
-
+  const token=useAppSelector(state=>state.MainSlice.Token);
   const [message, setMessage] = useState("");
   const [title, settitle] = useState("");
   const [error, seterror] = useState<boolean|null>(null);
@@ -54,7 +54,7 @@ const infos:ISendEmloyeeMessage={
       accountId:account
 }
 
-res=await SendEmployeeMessage(infos);
+res=await SendEmployeeMessage(infos,token);
   
 }
 res?seterror(false):seterror(true);

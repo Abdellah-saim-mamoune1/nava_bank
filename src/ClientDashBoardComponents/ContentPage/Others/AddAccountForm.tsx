@@ -6,6 +6,7 @@ import { ConfirmationCard } from "../../../SharedComponents/ConfirmationCard";
 import { ConfirmInfos } from "../../../SharedComponents/ConfirmationCard";
 import { ConfirmationResultCard } from "../../../SharedComponents/ConfirmationResultCard";
 import { IConfirmationResultCard } from "../../../SharedComponents/ConfirmationResultCard";
+import { useAppSelector } from "../../../features/Slices/hooks";
 export function AddSecondAccountForm() {
   const [formData, setFormData] = useState<{ [key: string]: string }>({
     balance: "",
@@ -17,6 +18,7 @@ export function AddSecondAccountForm() {
  const [showcircularprogress, setshowcircularprogress] = useState(false);
  const [showcresult,setshowcresult]=useState(false);
  const [error,seterror]=useState(false);
+ const token=useAppSelector(state=>state.MainSlice.Token);
 const confirminfo:ConfirmInfos={
 onclose:()=>{setshowconfirmation(false)},
 onconfirm:()=>{handleFormSubmit()},
@@ -76,7 +78,7 @@ function validate(){
         passWord:formData.password
       }
      
-      const result=await AddNewClientAccount(info);
+      const result=await AddNewClientAccount(info,token);
        setshowcircularprogress(false);
        setshowconfirmation(false);
       if(result===false){

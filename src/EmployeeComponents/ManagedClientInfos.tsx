@@ -20,6 +20,7 @@ export function ManagedClientInfos({returnaction}:{returnaction:returnto}) {
   const [showtransactions,setshowtransactions]=useState(false);
   const[showcircularprogress,setshowcircularprogress]=useState(false);
   const[freezingresult,setfreezingresult]=useState<boolean|null>(null);
+  const token=useAppSelector(state=>state.MainSlice.Token);
 
 const dispatch=useAppDispatch();
  const handleSave = () => {
@@ -43,7 +44,7 @@ async function  setupdates(){
  
   setshowcircularprogress(true);
   if(freeze!=null){
-    const f=await  FreezeUnfreezeClientAccount(freeze.accountid,freeze.thestate?"DisActivate":"Activate");
+    const f=await  FreezeUnfreezeClientAccount(freeze.accountid,freeze.thestate?"DisActivate":"Activate",token);
     setfreezingresult(f);
  if(f===true)
   dispatch(setClientAccountState(freeze));

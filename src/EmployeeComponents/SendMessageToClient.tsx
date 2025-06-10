@@ -6,6 +6,7 @@ import { ConfirmInfos } from "../SharedComponents/ConfirmationCard";
 import { ConfirmationResultCard } from "../SharedComponents/ConfirmationResultCard";
 import { IConfirmationResultCard } from "../SharedComponents/ConfirmationResultCard";
 import { ArrowBack } from "@mui/icons-material";
+import { useAppSelector } from "../features/Slices/hooks";
 
 type SimpleName = {
   name: string;
@@ -23,7 +24,7 @@ export function SendMessageToClient({ name, accounts,onreturn }: SimpleName) {
   const [confirmation, setconfirmation] = useState(false);
   const [showcircularprogress, setshowcircularprogress] = useState(false);
   const [showsendresult, setshowsendresult] = useState(false);
- 
+  const token=useAppSelector(state=>state.MainSlice.Token);
 
 
 const confirminfo:ConfirmInfos={
@@ -57,7 +58,7 @@ const infos:AddNotification={
       AccountId:selectedAccount
 }
 
-res=await sendclientmessage(infos);
+res=await sendclientmessage(infos,token);
   
 }
 res?seterror(false):seterror(true);

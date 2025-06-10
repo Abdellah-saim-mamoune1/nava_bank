@@ -50,10 +50,12 @@ export function Notifications() {
       prev.map((msg) => (msg.id === id ? { ...msg, isRead: true } : msg))
     );
 
-    console.log(id);
    
-    if(person?.Type==="Client")
+    if(person?.Type==="Client"){
     dispatch(UpdateIsNotificationViewed(id));
+    console.log("CLIENT");
+    
+  }
  
     else if(person?.Type==="Employee"){
     const isviewed:SetNotificationViewed={

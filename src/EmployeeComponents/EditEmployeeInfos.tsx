@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UpdateEmployeeInfos } from "../features/EmployeeFeatures/Others/APIs"; 
-import { useAppDispatch } from "../features/Slices/hooks";
+import { useAppDispatch, useAppSelector } from "../features/Slices/hooks";
 import { CircularProgress } from "@mui/material";
 import { FetchEmployeeInfos } from "../features/EmployeeFeatures/Others/APIs";
 
@@ -24,7 +24,7 @@ export function EditEmployeeInfos({
   const [showUpdateResult, setShowUpdateResult] = useState<string | null>(null);
   const [showcircularprogress, setshowcircularprogress] = useState(false);
   const dispatch = useAppDispatch();
-
+  const token=useAppSelector(state=>state.MainSlice.Token);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -65,7 +65,7 @@ export function EditEmployeeInfos({
   async function handleConfirmSave() {
     setshowcircularprogress(true);
    
-    const status = await UpdateEmployeeInfos(formData);
+    const status = await UpdateEmployeeInfos(formData,token);
     if (status === true) {
       dispatch(FetchEmployeeInfos());
       setShowConfirmation(false);

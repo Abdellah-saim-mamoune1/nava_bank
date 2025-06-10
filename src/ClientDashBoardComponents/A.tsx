@@ -46,7 +46,7 @@ useEffect(() => {
  
   if (Left_Nav_State !== 'open') return null;
   return (
-    <div className="flex flex-col overflow-y-auto dark:bg-gray-800 dark:border-gray-800 bg-white bg-black/50 border-r border-gray-200 absolute w-[70%] z-15 sm:relative sm:w-[30%] lg:w-[21%] h-screen shadow-sm">
+    <div className="flex flex-col overflow-y-auto dark:bg-gray-800 dark:border-gray-800 bg-white bg-black/50 border-r border-gray-200 absolute w-[70%] z-15 lg:relative sm:w-[30%] lg:w-[21%] h-screen shadow-sm">
    
       <Link
         to="/"

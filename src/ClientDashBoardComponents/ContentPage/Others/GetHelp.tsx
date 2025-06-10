@@ -18,7 +18,7 @@ export function GetHelp() {
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [showConfirmationCard, setShowConfirmationCard] = useState(false);
-
+  const token=useAppSelector(s=>s.MainSlice.Token);
   const AccountId = useAppSelector(
     (state) => state.ClientInfos.client_informations?.accountInfo.accountId
   );
@@ -57,12 +57,11 @@ export function GetHelp() {
         accountId: AccountId,
         type:4
       };
-      AddNewGetHelpRequist(requist);
+      AddNewGetHelpRequist(requist,token);
       setNotificationVisible(true);
       setTimeout(() => setNotificationVisible(false), 4000);
     }
 
-    console.log("Confirmed and submitted:", formData);
   };
 
   return (

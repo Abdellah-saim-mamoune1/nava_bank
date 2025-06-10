@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UpdateClientPersonalInfos } from "../../../features/Others/APIs";
-import { useAppDispatch } from "../../../features/Slices/hooks";
+import { useAppDispatch, useAppSelector } from "../../../features/Slices/hooks";
 import { fetchClientInfo } from "../../../features/Slices/Client_Infos_Slice";
 import { CircularProgress } from "@mui/material";
 import { fetchClientsInfos, FetchEmployeeInfos, UpdateEmployeeInfos } from "../../../features/EmployeeFeatures/Others/APIs";
@@ -25,7 +25,7 @@ export function EditClientInfos({
   const [showcircularprogress, setshowcircularprogress] = useState(false);
   //const [, setshowcircularprogress] = useState(false);
   const dispatch = useAppDispatch();
-
+ const token=useAppSelector(state=>state.MainSlice.Token);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
@@ -33,7 +33,7 @@ export function EditClientInfos({
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-
+ 
     if (!formData.firstName?.trim()) newErrors.firstName = "First name is required.";
     if (!formData.lastName?.trim()) newErrors.lastName = "Last name is required.";
     if (!formData.birthDate?.trim()) newErrors.birthDate = "Birth date is required.";
@@ -60,17 +60,18 @@ export function EditClientInfos({
   async function handleConfirmSave() {
     setshowcircularprogress(true);
     let status=null;
+   
     if(from==="Client"){
-    status = await UpdateClientPersonalInfos(formData);
+    status = await UpdateClientPersonalInfos(formData,token);
 await dispatch(fetchClientInfo());
 
     }
     else if(from==="Employee"){
-    status= await UpdateEmployeeInfos(formData);
+    status= await UpdateEmployeeInfos(formData,token);
      await dispatch(FetchEmployeeInfos());
     }
     else if(from==="Employee Edit Client"){
-      await UpdateClientPersonalInfos(formData);
+      await UpdateClientPersonalInfos(formData,token);
        await dispatch(fetchClientsInfos());
 
   }
