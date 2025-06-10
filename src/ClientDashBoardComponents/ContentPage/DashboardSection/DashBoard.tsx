@@ -2,13 +2,11 @@ import { useState } from "react";
 import { TransactionsTable } from "../Others/Table";
 import { TransactionsChart } from "./Transactionschart";
 import { useAppSelector } from "../../../features/Slices/hooks";
-import { useNavigate } from "react-router-dom";
 import AccountBalancePieChart from "./AnimatedProgressProvider";
 import { LoadingCircle } from "../../../SharedComponents/LoadingCircle";
 import { ITransactionsHistory } from "../../../features/Others/ClientInterfaces";
 
 export function Dashboard() {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(0);
   const cardsPerPage = 1;
    const transactions: ITransactionsHistory []= useAppSelector((state: any) => state.ClientInfos.TransactionsHistory);
@@ -91,12 +89,6 @@ export function Dashboard() {
             </button>
           </div>
 
-          <button
-            onClick={() => navigate("/Manage-Clients")}
-            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg mt-4"
-          >
-            Add More
-          </button>
         </div>
       </div>
 
