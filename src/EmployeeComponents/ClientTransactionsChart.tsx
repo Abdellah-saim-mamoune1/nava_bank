@@ -24,6 +24,7 @@ ChartJS.register(
 );
 
 export function ClientTransactionsChart({theme}:{theme:"light"|"dark"}) {
+  
   const transactions = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transactionsHistory
   );
@@ -32,9 +33,12 @@ export function ClientTransactionsChart({theme}:{theme:"light"|"dark"}) {
   );
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(
-  theme==="dark"?true:false
+  const storedTheme = localStorage.getItem("theme");
+  return storedTheme === "dark";
   );
-
+if(theme==='light'){
+  console.log('light');
+}
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
