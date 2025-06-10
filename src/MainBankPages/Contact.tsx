@@ -23,11 +23,7 @@ export function Contact() {
             transition={{ duration: 0.5 }}
             className="grid grid-cols-1 md:grid-cols-2 gap-6"
           >
-            <input
-              type="text"
-              placeholder="Your Name"
-              className="p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+           
             <input
               type="email"
               placeholder="Your Email"
@@ -41,6 +37,7 @@ export function Contact() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+               onClick={()=>{}}
               className="col-span-2 bg-cyan-600 font-semibold text-white py-3 px-6 rounded-lg shadow-lg hover:bg-cyan-600 transition duration-200"
             >
               Send Message
