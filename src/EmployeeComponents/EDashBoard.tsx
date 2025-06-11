@@ -21,8 +21,7 @@ export function EDashboard() {
     
   const dashboardstats=useAppSelector(state=>state.EPages.GetDashboardStats);
 
-  const a=localStorage.getItem('theme');
-   const theme = a===null||undefined?'light':"dark";
+ 
   if( !dashboardstats){
   return <div className="w-full h-full flex items-center justify-center"><CircularProgress /></div> 
   }
@@ -73,7 +72,7 @@ export function EDashboard() {
       </div>
       <RecentTransactions/>
       <RecentTransfers/>
-   < ClientTransactionsChart theme={theme} />
+   < ClientTransactionsChart  />
     </div>
   );
 }
