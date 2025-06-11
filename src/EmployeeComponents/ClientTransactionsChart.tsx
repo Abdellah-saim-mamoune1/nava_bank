@@ -24,16 +24,16 @@ ChartJS.register(
 );
 
 export function ClientTransactionsChart() {
-  
   const transactions = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transactionsHistory
   );
   const transfers = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transferFundHistory
   );
-  const storedTheme = localStorage.getItem("theme");
+
   const [isDarkMode, setIsDarkMode] = useState<boolean>(
-  storedTheme === "dark"
+    window.matchMedia("(prefers-color-scheme: dark)").matches ||
+      document.documentElement.classList.contains("dark")
   );
 
   useEffect(() => {
