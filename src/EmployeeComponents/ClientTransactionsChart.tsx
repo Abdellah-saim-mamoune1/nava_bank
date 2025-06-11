@@ -31,10 +31,9 @@ export function ClientTransactionsChart() {
   const transfers = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transferFundHistory
   );
-
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(
   const storedTheme = localStorage.getItem("theme");
-  return storedTheme === "dark";
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(
+  storedTheme === "dark"
   );
 
   useEffect(() => {
