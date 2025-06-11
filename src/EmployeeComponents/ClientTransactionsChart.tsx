@@ -23,7 +23,7 @@ ChartJS.register(
   Legend
 );
 
-export function ClientTransactionsChart({theme}:{theme:"light"|"dark"}) {
+export function ClientTransactionsChart() {
   
   const transactions = useAppSelector(
     (state) => state.EPages.DGetRecentTransactions?.transactionsHistory
@@ -36,9 +36,7 @@ export function ClientTransactionsChart({theme}:{theme:"light"|"dark"}) {
   const storedTheme = localStorage.getItem("theme");
   return storedTheme === "dark";
   );
-if(theme==='light'){
-  console.log('light');
-}
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
