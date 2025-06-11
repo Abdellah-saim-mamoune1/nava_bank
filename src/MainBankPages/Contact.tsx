@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 
 export function Contact() {
-  return (
+  return (  
+    
     <div className="min-h-screen bg-white text-gray-800 px-6 py-10">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
